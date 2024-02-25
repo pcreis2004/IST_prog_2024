@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <getopt.h>
 
 char tabela[] = "0123456789ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,;-";
 
-void encriptar(char *texto,int x) {
+void encriptar(char texto[],int x) {
     int i, j;
     for (i = 0; texto[i] != '\0'; ++i) {
 
@@ -18,12 +20,12 @@ void encriptar(char *texto,int x) {
         {
             texto[i]='\0';
         }
-        
+
     }
     printf("\n");
 }
 
-void desencriptar(char *texto,int x) {
+void desencriptar(char texto[],int x) {
     int i, j;
     for (i = 0; texto[i] != '\0'; ++i) {
         for (j = 0; j < strlen(tabela); ++j) {
@@ -37,8 +39,100 @@ void desencriptar(char *texto,int x) {
     printf("\n");
 }
 
+   
+   int main(int argc, char *argv[])  
+{ 
+    int opt; 
+      
+ 
+    while((opt = getopt(argc, argv, "hi:o:s:f:c:d:e:a:n:w:")) != -1)  
+    {  
+        switch(opt)  
+        {  
+            case 'h' :
+            printf("Escolha a opção que pretende utilizar:\n");
+            printf("-h ajuda para o utilizador\n");
+            printf("-i nome do ficheiro de entrada\n");
+            printf("-o nome do ficheiro de saída\n");
+            printf("-s senha a usar para cifrar/decifrar\n");
+            printf("-f filtração do ficheiro de entrada e formatação do ficheiro de saída\n");
+            printf("-c nn operação de cifra do método a escolher\n");
+            printf("-d nn operação de decifra do método a escolher\n");
+            printf("-e operação que realiza o calcula das estatísticas\n");
+            printf("-a nn operação que realiza o ataque com o método a escolher\n");
+            printf("-n nn dimensão maxima da chave para o método 3\n");
+            printf("-w nome do ficheiro utilizado\n");
+            exit(EXIT_SUCCESS);
 
-int main() {
+            case 'i':
+
+            
+
+            break;
+
+        case 'o':
+
+           
+
+            break;
+
+        case 's':
+
+           
+            break;
+
+        case 'f':
+
+          
+            break;
+
+        case 'c':
+
+            
+
+            break;
+
+        case 'd':
+
+            
+
+            break;
+
+        case 'e':
+
+            
+
+            break;
+
+        case 'a':
+
+           
+
+            break;
+
+           
+        case 'n':
+
+           
+
+            break;
+           
+            case 'w':
+
+           
+
+            break;
+        
+        default:
+
+            printf("Invalid option. Use -h to see available options.\n");
+            exit(EXIT_FAILURE);
+
+        
+         }  
+    }  
+      
+    
     char texto[100];
     int x;
     printf("Digite o offset: ");
@@ -57,7 +151,7 @@ int main() {
     printf("Digite uma string para desencriptar: ");
     char texto_encriptado[100];
     fgets(texto_encriptado, sizeof(texto_encriptado), stdin);
-    
+
     texto_encriptado[strcspn(texto_encriptado, "\n")] = '\0'; // Remove a quebra de linha inserida pelo fgets
     desencriptar(texto_encriptado,x);
 
