@@ -5,25 +5,7 @@
 
 char tabela[] = "0123456789ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,;-";
 
-void encriptar1(char texto[],int x) {
-    int i, j;
-    for (i = 0; texto[i] != '\0'; ++i) {
 
-        for (j = 0; j < 67; ++j) {
-            if (texto[i] == tabela[j]) {
-                int cifrado = (j + x) % 67;
-                printf("%c", tabela[cifrado]); // Imprime o caractere correspondente ao novo índice
-                break;
-            }
-        }
-        if (j==67)
-        {
-            texto[i]='\0';
-        }
-
-    }
-    printf("\n");
-}
 
 void desencriptar1(char texto[],int x) {
     int i, j;
@@ -39,37 +21,37 @@ void desencriptar1(char texto[],int x) {
     printf("\n");
 }
 
-
-void encriptar2(char texto[],int x,char password[]) {
+int encriptar2(char texto[], int x, char password[]) {
     int i, j;
-    int y;
-    int lol;
+    int y = -1; // Initialize y with a value indicating it's not set yet
 
-    for (lol = 0; lol < 67; ++lol) {
-        if (password[0] == tabela[j]) {
-            int y = lol;
-            printf("Offset -> %d\n", y); // Imprime o offset correspondente ao primeiro caracter da senha
+    // Find the offset corresponding to the first character of the password
+    for (int lol = 0; lol < 67; ++lol) {
+        if (password[0] == tabela[lol]) {
+            y = lol;
+            printf("Offset -> %d\n", y); // Print the offset corresponding to the first character of the password
             break;
         }
     }
-    printf("[%s]\n",texto);
+    
+
+    // Encrypt the text
     for (i = 0; texto[i] != '\0'; ++i) {
         for (j = 0; j < 67; ++j) {
             if (texto[i] == tabela[j]) {
                 int cifrado = (j + y) % 67;
-                printf("%c", tabela[cifrado]); // Imprime o caractere correspondente ao novo índice
+                printf("%c", tabela[cifrado]); // Print the character corresponding to the new index
                 break;
             }
         }
-        if (j==67)
-        {
-            texto[i]='\0';
+        if (j == 67) {
+            texto[i] = '\0';
         }
-
     }
     printf("\n");
+    return y;
 }
-   
+  
    int main(int argc, char *argv[])  
 { 
     int opt; 
@@ -162,8 +144,7 @@ void encriptar2(char texto[],int x,char password[]) {
          }  
     }  
       
-
-    int max_password_length = 100; // Maximum length of the password
+int max_password_length = 100; // Maximum length of the password
     char *password = (char *)malloc(max_password_length * sizeof(char)); // Dynamically allocate memory for password
 
     if (password == NULL) {
@@ -184,24 +165,26 @@ void encriptar2(char texto[],int x,char password[]) {
         free(password); // Free dynamically allocated memory before exiting
         return 1;
     }
-    
+
     char texto[100];
-    int x;
-    
+    int x = 0; // Initialize x with a value (you can change it as per your requirement)
+
     printf("Digite uma string para encriptar: ");
     fgets(texto, sizeof(texto), stdin);
     texto[strcspn(texto, "\n")] = '\0'; // Remove the newline inserted by fgets
 
     printf("Texto encriptado e revertido para letras: ");
-    encriptar2(texto, x, password);
-
+    int y = encriptar2(texto, x, password);
     
-    /*printf("Digite uma string para desencriptar: ");
+
+       
+    printf("Digite uma string para desencriptar: ");
     char texto_encriptado[100];
     fgets(texto_encriptado, sizeof(texto_encriptado), stdin);
 
     texto_encriptado[strcspn(texto_encriptado, "\n")] = '\0'; // Remove a quebra de linha inserida pelo fgets
-    desencriptar1(texto_encriptado,x);*/
+    desencriptar1(texto_encriptado,y);
+    free(password);
 
     return 0;
 }
