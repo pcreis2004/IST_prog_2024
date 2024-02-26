@@ -21,7 +21,7 @@ void desencriptar1(char texto[],int x) {
     printf("\n");
 }
 
-int encriptar2(char texto[], int x, char password[]) {
+int encriptar1(char texto[], char password[]) {
     int i, j;
     int y = -1; // Initialize y with a value indicating it's not set yet
 
@@ -57,7 +57,7 @@ int encriptar2(char texto[], int x, char password[]) {
     int opt; 
       
  
-    while((opt = getopt(argc, argv, "hi:o:s:f:c:d:e:a:n:w:")) != -1)  
+    while((opt = getopt(argc, argv, "hi:oi:si:fi:ci:di:ei:ai:ni:wi:")) != -1)  
     {  
         switch(opt)  
         {  
@@ -77,60 +77,70 @@ int encriptar2(char texto[], int x, char password[]) {
             exit(EXIT_SUCCESS);
 
             case 'i':
-
+            printf("comando -> i\n");
+            exit(EXIT_SUCCESS);
             
 
             break;
 
         case 'o':
 
-           
+            printf("comando -> o\n");
+            exit(EXIT_SUCCESS);
 
             break;
 
         case 's':
-
+            printf("comando -> s\n");
+            exit(EXIT_SUCCESS);
            
             break;
 
         case 'f':
+            printf("comando -> f\n");
+            exit(EXIT_SUCCESS);
 
-          
             break;
 
         case 'c':
-
+            printf("comando -> c\n");
+            exit(EXIT_SUCCESS);
             
 
             break;
 
         case 'd':
-
+            printf("comando -> d\n");
+            exit(EXIT_SUCCESS);
             
 
             break;
 
         case 'e':
-
+            printf("comando -> e\n");
+            exit(EXIT_SUCCESS);
             
 
             break;
 
         case 'a':
-
+            printf("comando -> a\n");
+            exit(EXIT_SUCCESS);
            
 
             break;
 
            
         case 'n':
+            printf("comando -> n\n");
+            exit(EXIT_SUCCESS);
 
-           
 
             break;
            
             case 'w':
-
+            printf("comando -> w\n");
+            exit(EXIT_SUCCESS);
            
 
             break;
@@ -167,14 +177,14 @@ int max_password_length = 100; // Maximum length of the password
     }
 
     char texto[100];
-    int x = 0; // Initialize x with a value (you can change it as per your requirement)
+    
 
     printf("Digite uma string para encriptar: ");
     fgets(texto, sizeof(texto), stdin);
     texto[strcspn(texto, "\n")] = '\0'; // Remove the newline inserted by fgets
 
     printf("Texto encriptado e revertido para letras: ");
-    int y = encriptar2(texto, x, password);
+    int y = encriptar1(texto, password);
     
 
        
