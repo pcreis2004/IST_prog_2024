@@ -155,45 +155,29 @@ void desencriptar2(char texto[],char password[]){
     printf("\n");
 }
 
-
+void help(){
+    printf("Escolha a opmnão que pretende utilizar:\n");
+    printf("-h ajuda para o utilizador\n");
+    printf("-s senha a usar para cifrar/decifrar\n");
+    printf("-f filtração do ficheiro de entrada e formatação do ficheiro de saída\n");
+    printf("-c nn operação de cifra do método a escolher\n");
+    printf("-d nn operação de decifra do método a escolher\n");
+}
 
 
 int main(int argc, char *argv[])  { 
     int opt; 
       
  
-    while((opt = getopt(argc, argv, "hi:oi:si:fi:c:d:ei:ai:ni:wi:")) != -1)  
+    while((opt = getopt(argc, argv, "h:s:f:c:d:")) != -1)  
     {  
         switch(opt)  
         {  
             case 'h' :
-            printf("Escolha a opmnão que pretende utilizar:\n");
-            printf("-h ajuda para o utilizador\n");
-            printf("-i nome do ficheiro de entrada\n");
-            printf("-o nome do ficheiro de saída\n");
-            printf("-s senha a usar para cifrar/decifrar\n");
-            printf("-f filtramnão do ficheiro de entrada e formatamnão do ficheiro de saída\n");
-            printf("-c nn operamnão de cifra do método a escolher\n");
-            printf("-d nn operamnão de decifra do método a escolher\n");
-            printf("-e operamnão que realiza o calcula das estatísticas\n");
-            printf("-a nn operamnão que realiza o ataque com o método a escolher\n");
-            printf("-n nn dimensão maxima da chave para o método 3\n");
-            printf("-w nome do ficheiro utilizado\n");
+            help();
             exit(EXIT_SUCCESS);
-
-            case 'i':
-            printf("comando -> i\n");
-            exit(EXIT_SUCCESS);
-            
-
             break;
 
-        case 'o':
-
-            printf("comando -> o\n");
-            exit(EXIT_SUCCESS);
-
-            break;
 
         case 's':
             printf("comando -> s\n");
@@ -292,39 +276,9 @@ int main(int argc, char *argv[])  {
             
 
             break;
-
-        case 'e':
-            printf("comando -> e\n");
-            exit(EXIT_SUCCESS);
-            
-
-            break;
-
-        case 'a':
-            printf("comando -> a\n");
-            exit(EXIT_SUCCESS);
-           
-
-            break;
-
-           
-        case 'n':
-            printf("comando -> n\n");
-            exit(EXIT_SUCCESS);
-
-
-            break;
-           
-            case 'w':
-            printf("comando -> w\n");
-            exit(EXIT_SUCCESS);
-           
-
-            break;
-        
         default:
 
-            printf("Invalid option. Use -h to see available options.\n");
+            help();
             exit(EXIT_FAILURE);
 
         
@@ -356,6 +310,7 @@ int main(int argc, char *argv[])  {
     desencriptar2(texto_encriptado,password);
     //free(password);
     */
-
+    help();
+    exit(EXIT_FAILURE);
     return 0;
 }
