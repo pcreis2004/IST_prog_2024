@@ -156,7 +156,7 @@ void desencriptar2(char texto[],char password[]){
 }
 
 void help(){
-    printf("Escolha a opmnão que pretende utilizar:\n");
+    printf("Escolha a opção que pretende utilizar:\n");
     printf("-h ajuda para o utilizador\n");
     printf("-s senha a usar para cifrar/decifrar\n");
     printf("-f filtração do ficheiro de entrada e formatação do ficheiro de saída\n");
