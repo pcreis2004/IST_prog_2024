@@ -8,7 +8,8 @@ char tabela[] = "0123456789ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 
 
 
 
-void desencriptar1(char texto[], char password[]) {
+void desencriptar1(char texto[], char *password) {
+    printf("[Desencriptação]\nCifra de César com a senha: %s\n",password);
 
     int i, j;
     int y = -1; // Initialize y with a value indicating it's not set yet
@@ -41,7 +42,8 @@ void desencriptar1(char texto[], char password[]) {
 
 
 
-void encriptar1(char texto[], char password[]) {
+void encriptar1(char texto[], char *password) {
+    printf("[Encriptação]\nCifra de César com a senha: %s\n",password);
     int i, j;
     int y = -1; // Initialize y with a value indicating it's not set yet
 
@@ -73,7 +75,8 @@ void encriptar1(char texto[], char password[]) {
 }
 
 
-void encriptar2(char texto[], char password[]) {
+void encriptar2(char texto[], char *password) {
+    printf("[Encriptação]\nCifra de Vigenére com a senha: %s\n",password);
     int i=0;
     int j;
     int y = -1; // Initialize y with a value indicating it's not set yet
@@ -114,8 +117,8 @@ void encriptar2(char texto[], char password[]) {
     
 }
 
-void desencriptar2(char texto[],char password[]){
-
+void desencriptar2(char texto[],char *password){
+    printf("[Desencriptação]\nCifra de Vigenére com a senha: %s\n",password);
     int i=0;
     int j;
     int y = -1; // Initialize y with a value indicating it's not set yet
@@ -167,150 +170,89 @@ void help(){
 
 int main(int argc, char *argv[])  { 
     int opt; 
-      
+    //char password[100]="Programacao2024";
+    
+    char *senha="Programacao2024";
+    printf("Argumentos passados:\n");
+        // Imprime os vários argumentos com o argv
+        for (int i = 0; i < argc; i++) {
+            printf("Argumento %d: %s --> argv[%d]\n", i, argv[i],i);
+        }  
  
-    while((opt = getopt(argc, argv, "h:s:f:c:d:")) != -1)  
-    {  
-        switch(opt)  
-        {  
-            case 'h' :
-            help();
-            exit(EXIT_SUCCESS);
-            break;
-
-
-        case 's':
-            printf("comando -> s\n");
-            exit(EXIT_SUCCESS);
-           
-            break;
-
-        case 'f':
-            printf("comando -> f\n");
-            exit(EXIT_SUCCESS);
-
-            break;
-
-        case 'c':
-            printf("comando -> c\n");
-           
-            printf("[%s]\n",optarg);
-            if (atoi(optarg) ==1){
-
-                char texto[100];
-                
-                char password[100];
-                printf("Digite uma string para password: ");
-                fgets(password, sizeof(password), stdin);
-                password[strcspn(password, "\n")] = '\0'; // Remove the newline inserted by fgets
-                printf("Digite uma string para encriptar: ");
-                fgets(texto, sizeof(texto), stdin);
-                texto[strcspn(texto, "\n")] = '\0'; // Remove the newline inserted by fgets
-                printf("Texto encriptado e revertido para letras: ");
-                encriptar1(texto, password);
-
-            exit(EXIT_SUCCESS);
-            }           
-
-            if(atoi(optarg)==2)
-            {
-                char password[100];
-                printf("Digite uma string para password: ");
-                fgets(password, sizeof(password), stdin);
-                password[strcspn(password, "\n")] = '\0'; // Remove the newline inserted by fgets
-                char texto_encriptado[100];
-                printf("Digite uma string para encriptar: ");
-                fgets(texto_encriptado, sizeof(texto_encriptado), stdin);
-
-                texto_encriptado[strcspn(texto_encriptado, "\n")] = '\0'; // Remove a quebra de linha inserida pelo fgets
-                printf("Texto encriptado e revertido para letras: ");
-                encriptar2(texto_encriptado,password);
-                
+    while ((opt = getopt(argc, argv, "h:s:f:c:d:")) != -1) {
+        switch (opt) {
+            case 'h':
+                help();
                 exit(EXIT_SUCCESS);
-            }else{printf("número inválido\n");
-            exit(EXIT_FAILURE);
-            }
-            
-            break;
+                break;
 
-        case 'd':
-            printf("comando -> d\n");
-            
-            printf("[%s]\n",optarg);
-            if (atoi(optarg) ==1){
-
-                char texto[100];
+            case 's':
+                printf("comando -> s\n");
+                printf("[%s]\n", optarg);
                 
-                char password[100];
-                printf("Digite uma string para password: ");
-                fgets(password, sizeof(password), stdin);
-                password[strcspn(password, "\n")] = '\0'; // Remove the newline inserted by fgets
-                printf("Digite uma string para desencriptar: ");
-                fgets(texto, sizeof(texto), stdin);
-                texto[strcspn(texto, "\n")] = '\0'; // Remove the newline inserted by fgets
-                printf("Texto desencriptado e revertido para letras: ");
-                desencriptar1(texto, password);
-
-            exit(EXIT_SUCCESS);
-            }           
-
-            if(atoi(optarg)==2)
-            {
-                char password[100];
-                printf("Digite uma string para password: ");
-                fgets(password, sizeof(password), stdin);
-                password[strcspn(password, "\n")] = '\0'; // Remove the newline inserted by fgets
-                char texto_encriptado[100];
-                printf("Digite uma string para desencriptar: ");
-                fgets(texto_encriptado, sizeof(texto_encriptado), stdin);
-
-                texto_encriptado[strcspn(texto_encriptado, "\n")] = '\0'; // Remove a quebra de linha inserida pelo fgets
-                printf("Texto desencriptado e revertido para letras: ");
-                desencriptar2(texto_encriptado,password);
+                senha = optarg;
+                printf("Senha --> {{%s}}\n", senha);
                 
-                exit(EXIT_SUCCESS);
-            }else{printf("número inválido\n");
-            exit(EXIT_FAILURE);
-            }
-            
-            
+                break;
 
-            break;
-        default:
+            case 'f':
+                printf("comando -> f\n");
+                break;
 
-            help();
-            exit(EXIT_FAILURE);
+            case 'c':
+                printf("comando -> c\n");
+                
+                printf("[%s]\n", optarg);
+                if (atoi(optarg) == 1) {
+                    char texto[100];
+                    printf("Digite uma string para encriptar: ");
+                    fgets(texto, sizeof(texto), stdin);
+                    texto[strcspn(texto, "\n")] = '\0'; // Remove the newline inserted by fgets
+                    printf("Texto encriptado e revertido para letras: ");
+                    encriptar1(texto, senha);
+                } else if (atoi(optarg) == 2) {
+                    char texto_encriptado[100];
+                    printf("Digite uma string para encriptar: ");
+                    fgets(texto_encriptado, sizeof(texto_encriptado), stdin);
+                    texto_encriptado[strcspn(texto_encriptado, "\n")] = '\0'; // Remove a quebra de linha inserida pelo fgets
+                    printf("Texto encriptado e revertido para letras: ");
+                    encriptar2(texto_encriptado, senha);
+                } else {
+                    printf("número inválido\n");
+                    exit(EXIT_FAILURE);
+                }
+                break;
 
-        
-         }  
+            case 'd':
+                printf("comando -> d\n");
+                printf("[%s]\n", optarg);
+                if (atoi(optarg) == 1) {
+                    char texto[100];
+                    printf("Digite uma string para desencriptar: ");
+                    fgets(texto, sizeof(texto), stdin);
+                    texto[strcspn(texto, "\n")] = '\0'; // Remove the newline inserted by fgets
+                    printf("Texto desencriptado e revertido para letras: ");
+                    desencriptar1(texto, senha);
+                } else if (atoi(optarg) == 2) {
+                    char texto_encriptado[100];
+                    printf("Digite uma string para desencriptar: ");
+                    fgets(texto_encriptado, sizeof(texto_encriptado), stdin);
+                    texto_encriptado[strcspn(texto_encriptado, "\n")] = '\0'; // Remove a quebra de linha inserida pelo fgets
+                    printf("Texto desencriptado e revertido para letras: ");
+                    desencriptar2(texto_encriptado, senha);
+                } else {
+                    printf("número inválido\n");
+                    exit(EXIT_FAILURE);
+                }
+                break;
+
+            default:
+                help();
+                exit(EXIT_FAILURE);
+        }
+    
     }  
-   /*
-    char password[100];
-    char texto[100];
-    fgets(password, sizeof(password), stdin);
-    password[strcspn(password, "\n")] = '\0'; // Remove the newline inserted by fgets
-
-    printf("Digite uma string para encriptar: ");
-    fgets(texto, sizeof(texto), stdin);
-    texto[strcspn(texto, "\n")] = '\0'; // Remove the newline inserted by fgets
-    
-    printf("Texto encriptado e revertido para letras: ");
-    //encriptar1(texto, password);
-    
-    encriptar2(texto,password);
-       
-    printf("Digite uma string para desencriptar: ");
-    char texto_encriptado[100];
-    fgets(texto_encriptado, sizeof(texto_encriptado), stdin);
-
-    texto_encriptado[strcspn(texto_encriptado, "\n")] = '\0'; // Remove a quebra de linha inserida pelo fgets
-    //desencriptar1(texto_encriptado,password);
-    
-    
-    desencriptar2(texto_encriptado,password);
-    //free(password);
-    */
-    help();
-    exit(EXIT_FAILURE);
+   
+    exit(EXIT_SUCCESS);
     return 0;
 }
