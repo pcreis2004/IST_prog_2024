@@ -34,7 +34,7 @@ void desencriptar1(char caracter, char *password) {
             }
         }
         if (j == 67) {
-            caracter = '\0';
+            printf("%c",caracter);
         }
     
     
@@ -68,7 +68,7 @@ void encriptar1(char caracter, char *password) {
             }
         }
         if (j == 67) {
-            caracter = '\0';
+            printf("%c",caracter);
         }
     
     
@@ -93,7 +93,7 @@ void encriptar2(char caracter, int x[], int senha_len, int index) {
     }
 
     if (j == 67) {
-        caracter = '\0';
+        printf("%c",caracter);
     }
     
 }
@@ -115,7 +115,7 @@ void desencriptar2(char caracter, int x[], int senha_len, int index) {
     }
 
     if (j == 67) {
-        caracter = '\0';
+        printf("%c",caracter);
     }
     
 }
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])  {
                             printf("Encriptação realizada com sucesso\n");
                             return EXIT_SUCCESS;
                         }
-                        encriptar1(caracter,senha);
+                        desencriptar1(caracter,senha);
              
                         
                     }
@@ -295,6 +295,6 @@ int main(int argc, char *argv[])  {
     
     }  
    
-    
+
     return 0;
 }
