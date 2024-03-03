@@ -2,9 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <ctype.h>
 
-char tabela[] = "0123456789ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,;-";
-
+char tabela[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,;-";
 
 
 
@@ -76,6 +76,38 @@ void encriptar1(char caracter, char *password) {
 }
 
 
+void encriptar1_filtado(char caracter, char *password) {
+    static int count = 0;
+
+    // Encontrar o offset correspondente ao primeiro caractere da senha
+    int y = 0;
+    for (int lol = 0; lol < 67; ++lol) {
+        if (password[0] == tabela[lol]) {
+            y = lol;
+            break;
+        }
+    }
+
+    // Encriptar o texto
+    for (int j = 0; j < 67; ++j) {
+        if (caracter == tabela[j]) {
+            int cifrado = (j + y) % 67;
+            printf("%c", tabela[cifrado]); // Imprimir o caractere correspondente ao novo índice
+
+            count++;
+
+            // Verificar se é hora de imprimir uma nova linha
+            if (count == 48) {
+                printf("\n");
+                count = 0;
+            } else if (count % 6 == 0 && count % 48!= 0) {
+                printf("_"); // Imprimir sublinhado após cada bloco de 7 caracteres (exceto quando é uma nova linha)
+            }
+
+            break;
+        }
+    }
+}
 
 void encriptar2(char caracter, int x[], int senha_len, int index) {
     
@@ -135,7 +167,7 @@ void help(){
 int main(int argc, char *argv[])  { 
     int opt; 
     //char password[100]="Programacao2024";
-    
+    int f=0;
     char *senha="Programacao2024";
     printf("Argumentos passados:\n");
         // Imprime os vários argumentos com o argv
@@ -161,6 +193,8 @@ int main(int argc, char *argv[])  {
 
             case 'f':
                 printf("comando -> f\n");
+                f = 1;
+                
                 break;
 
             case 'c':
@@ -169,7 +203,27 @@ int main(int argc, char *argv[])  {
                 printf("[%s]\n", optarg);
                 if (atoi(optarg) == 1) {
 
-                    char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
+                    if(f==1){
+
+                        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
+                        printf("Insert characters: ");
+                        while(caracter != EOF)
+                        {
+                            /* lê caractere e guarda na variável c, validando a leitura */
+                            if (scanf("%c", &caracter) < 1){
+                                printf("\n");
+                                printf("Encriptação realizada com sucesso\n");
+                                return EXIT_SUCCESS;
+                            }
+                            encriptar1(caracter,senha);
+                
+                            
+                        }
+
+                        
+                    }else
+                    {
+                       char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
                     printf("Insert characters: ");
                     while(caracter != EOF)
                     {
@@ -179,11 +233,14 @@ int main(int argc, char *argv[])  {
                             printf("Encriptação realizada com sucesso\n");
                             return EXIT_SUCCESS;
                         }
-                        encriptar1(caracter,senha);
+                        encriptar1_filtado(caracter,senha);
              
                         
                     }
-                
+                }
+                    
+
+                    
                 } else if (atoi(optarg) == 2) {
 
 
