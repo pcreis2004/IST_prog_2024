@@ -523,12 +523,26 @@ void decriptacao(int metodo,int f,char *senha){
 
 }
 
-
+int isValidCharacter(char c[]) {
+    // Check if the character belongs to the tabela[] array
+    for (int j = 0; j < strlen(c); j++)
+    {
+    
+    
+    for (int i = 0; i < strlen(tabela); i++) {
+        if (c[j] == tabela[i]) {
+            return 1; // Character is valid
+        }
+    }
+     return 0;
+    }
+    return 0;// Character is not valid
+}
 
 int main(int argc, char *argv[])  { 
     int opt; 
-    int operação;
-    int metodo;
+    int operação=0;
+    int metodo=0;
     
     
     int f=0;
@@ -543,11 +557,15 @@ int main(int argc, char *argv[])  {
                 break;
 
             case 's':
-                /*printf("comando -> s\n");
-                printf("[%s]\n", optarg);*/
-                
                 senha = optarg;
-                //printf("Senha --> {{%s}}\n", senha);
+                if (isValidCharacter(senha)==0)
+                {
+                    printf("ERRO TECLADO\n");
+                    exit(EXIT_FAILURE);
+                }
+                printf("%s",senha);
+                
+                
                 
                 break;
 
