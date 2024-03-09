@@ -420,7 +420,7 @@ void decriptacao(int metodo,int f,char *senha){
         {
             /* lê caractere e guarda na variável c, validando a leitura */
             if (scanf("%c", &caracter) < 1){
-                //printf("\n");
+                printf("\n");
                 //printf("Encriptação realizada com sucesso\n");
                 exit(EXIT_SUCCESS);
             }
@@ -523,21 +523,31 @@ void decriptacao(int metodo,int f,char *senha){
 
 }
 
-int isValidCharacter(char c[]) {
+void isValidCharacter(char *senha) {
     // Check if the character belongs to the tabela[] array
-    for (int j = 0; j < strlen(c); j++)
+    int j;
+    for (int x = 0; x < strlen(senha); x++)
     {
+        
     
     
-    for (int i = 0; i < strlen(tabela); i++) {
-        if (c[j] == tabela[i]) {
-            return 1; // Character is valid
+    for (j = 0; j < 67; ++j) {
+            if (senha[x] == tabela[j]) {
+                 // Print the character corresponding to the new index
+                 //printf("%c válido",senha[x]);
+                break;
+            }
+        }
+        if (j == 67) {
+            printf("ERRO\n");
+            exit(EXIT_FAILURE);
         }
     }
-     return 0;
-    }
-    return 0;// Character is not valid
 }
+
+
+
+
 
 int main(int argc, char *argv[])  { 
     int opt; 
@@ -558,13 +568,7 @@ int main(int argc, char *argv[])  {
 
             case 's':
                 senha = optarg;
-                if (isValidCharacter(senha)==0)
-                {
-                    printf("ERRO TECLADO\n");
-                    exit(EXIT_FAILURE);
-                }
-                printf("%s",senha);
-                
+                isValidCharacter(senha);
                 
                 
                 break;
@@ -612,5 +616,5 @@ int main(int argc, char *argv[])  {
 
 
 
-    return 0;
+    return 1;
 }
