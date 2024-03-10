@@ -6,119 +6,119 @@
 
 char tabela[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,;-";
 
-
-
 void desencriptar1(char caracter, char *password) {
-    //printf("[Encriptação]\nCifra de César com a senha: %s\n",password);
+    
+    //incialização das variaveis
     int j;
-    int y = -1; // Initialize y with a value indicating it's not set yet
+    int y = -1; 
     
     
-    // Find the offset corresponding to the first character of the password
+    // calculo do offset do primeiro caracter
     for (int lol = 0; lol < 67; ++lol) {
         if (password[0] == tabela[lol]) {
             y = lol;
-            //printf("Offset -> %d\n", y); // Print the offset corresponding to the first character of the password
             break;
         }
     }
     
 
-    // Encrypt the text
     
-        for (j = 0; j < 67; ++j) {
-            if (caracter == tabela[j]) {
-                int cifrado = (j + 67-y) % 67;
-                
-                printf("%c", tabela[cifrado]); // Print the character corresponding to the new index
-                break;
-            }
+    
+    for (j = 0; j < 67; ++j) {
+        if (caracter == tabela[j]) {
+            int cifrado = (j + 67-y) % 67;
+            
+            printf("%c", tabela[cifrado]); // imprime o caracter desencriptado
         }
-        if (j == 67) {
-            printf("%c",caracter);
-        }
+    }
+    //imprime o caracter não cifrado cajo não pertença à tabela
+    if (j == 67) {
+        printf("%c",caracter);
+    }
     
     
     
 }
 
 void desencriptar1_filtrado(char caracter, char *password) {
-    //printf("[Encriptação]\nCifra de César com a senha: %s\n",password);
+    
+    //incialização das variaveis
     int j;
-    int y = -1; // Initialize y with a value indicating it's not set yet
+    int y = -1; 
     static int count=0;
     
-    // Find the offset corresponding to the first character of the password
+   // calculo do offset do primeiro caracter
     for (int lol = 0; lol < 67; ++lol) {
         if (password[0] == tabela[lol]) {
             y = lol;
-            //printf("Offset -> %d\n", y); // Print the offset corresponding to the first character of the password
             break;
         }
     }
     
 
-    // Encrypt the text
     
-        for (j = 0; j < 67; ++j) {
-            if (caracter == tabela[j]) {
-                int cifrado = (j + 67-y) % 67;
-                
-                printf("%c", tabela[cifrado]); // Print the character corresponding to the new index
+    
+    for (j = 0; j < 67; ++j) {
 
+        if (caracter == tabela[j]) {
+            int cifrado = (j + 67-y) % 67;
+            
+            printf("%c", tabela[cifrado]); // imprime o caracter desencriptado
+            count++;
 
-                count++;
-            if (count == 48) {
-                printf("\n");
-                count = 0;
-            }
-                break;
-            }
+        if (count == 48) { //muda de linha caso já tenham sido impressos 48 caracteres na linha
+            printf("\n");
+            count = 0;
         }
+            break;
+        }
+
+    }
         
     
     
     
 }
 
-
 void encriptar1(char caracter, char *password) {
-    //printf("[Encriptação]\nCifra de César com a senha: %s\n",password);
+    
+    //incialização das variaveis
     int j;
-    int y = -1; // Initialize y with a value indicating it's not set yet
+    int y = -1; 
 
-    // Find the offset corresponding to the first character of the password
+    // calculo do offset do primeiro caracter
     for (int lol = 0; lol < 67; ++lol) {
         if (password[0] == tabela[lol]) {
             y = lol;
-            //printf("Offset -> %d\n", y); // Print the offset corresponding to the first character of the password
+            
             break;
         }
     }
     
 
-    // Encrypt the text
     
-        for (j = 0; j < 67; ++j) {
-            if (caracter == tabela[j]) {
-                int cifrado = (j + y) % 67;
-                printf("%c", tabela[cifrado]); // Print the character corresponding to the new index
-                break;
-            }
+    
+    for (j = 0; j < 67; ++j) {
+        if (caracter == tabela[j]) {
+            int cifrado = (j + y) % 67;
+            printf("%c", tabela[cifrado]); // imprime o caracter cifrado
         }
-        if (j == 67) {
-            printf("%c",caracter);
-        }
+    }
+    //imprime o caracter não cifrado cajo não pertença à tabela
+    if (j == 67) {
+        printf("%c",caracter);
+    }
     
     
     
 }
 
-
 void encriptar1_filtado(char caracter, char *password) {
+    
+    //incialização das variaveis
     static int count = 0;
 
-    // Encontrar o offset correspondente ao primeiro caractere da senha
+    // calculo do offset do primeiro caracter
     int y = 0;
     for (int lol = 0; lol < 67; ++lol) {
         if (password[0] == tabela[lol]) {
@@ -127,20 +127,22 @@ void encriptar1_filtado(char caracter, char *password) {
         }
     }
 
-    // Encriptar o texto
+    
     for (int j = 0; j < 67; ++j) {
         if (caracter == tabela[j]) {
+            
+           
             int cifrado = (j + y) % 67;
-            printf("%c", tabela[cifrado]); // Imprimir o caractere correspondente ao novo índice
+            printf("%c", tabela[cifrado]); // imprime o caracter cifrado
 
             count++;
 
-            // Verificar se é hora de imprimir uma nova linha
+            // verifica se é preciso mudar de linha
             if (count == 48) {
                 printf("\n");
                 count = 0;
-            } else if (count % 6 == 0 && count % 48!= 0) {
-                printf("_"); // Imprimir sublinhado após cada bloco de 7 caracteres (exceto quando é uma nova linha)
+            } else if (count % 6 == 0 && count % 48!= 0) { // Imprime um '_' a cada 7 caracteres, a não ser que seja altura de mudar de linha
+                printf("_"); 
             }
 
             break;
@@ -149,12 +151,12 @@ void encriptar1_filtado(char caracter, char *password) {
 }
 
 int encriptar2(char caracter, int x[], int senha_len, int index) {
-    
+    //inicialização das variáveis
     int cifrado;
-    int mn = index % senha_len; // Calcula o índice na senha
+    int mn = index % senha_len; // calculo do índice da senha
     int j;
+    
 
-    // Encripta o caractere usando a cifra de Vigenère
     for (j = 0; j < 67; ++j) {
         if (caracter == tabela[j]) {
             cifrado = (j + x[mn]) % 67;
@@ -163,22 +165,27 @@ int encriptar2(char caracter, int x[], int senha_len, int index) {
         }
     }
 
+    //imprime o caracter não cifrado cajo não pertença à tabela
     if (j == 67) {
         printf("%c",caracter);
-        index--;
+        
     }
-    index++;
+    //aumenta o índice só se o caracter pertencer à tabela
+    if(j!=67){
+      index++;  
+    }
+    
     return index;
 }
 
 
 int desencriptar2(char caracter, int x[], int senha_len, int index) {
-    
+    //inicialização das variáveis
     int cifrado;
-    int mn = index % senha_len; // Calcula o índice na senha
+    int mn = index % senha_len; // calculo do índice da senha
     int j;
 
-    // Encripta o caractere usando a cifra de Vigenère
+    
     for (j = 0; j < 67; ++j) {
         if (caracter == tabela[j]) {
             cifrado = (j + 67 - x[mn]) % 67;
@@ -187,23 +194,30 @@ int desencriptar2(char caracter, int x[], int senha_len, int index) {
         }
     }
 
+    //imprime o caracter não cifrado cajo não pertença à tabela
     if (j == 67) {
         printf("%c",caracter);
-        index--;
+        
     }
-    index++;
+    //aumenta o índice só se o caracter pertencer à tabela
+    if(j!=67){
+      index++;  
+    }
+    
     return index;
 }
 
 int encriptar2_filtrado(char caracter, int x[], int senha_len, int index) {
+    //inicialização das variáveis
     static int count = 0;
     int cifrado;
-    int mn = index % senha_len; // Calcula o índice na senha
+    int mn = index % senha_len; // calculo do índice da senha
     int j;
 
-    // Encripta o caractere usando a cifra de Vigenère
+   
     for (j = 0; j < 67; ++j) {
         if (caracter == tabela[j]) {
+           
             cifrado = (j + x[mn]) % 67;
             printf("%c", tabela[cifrado]); // Imprime o caractere cifrado
             count++;
@@ -212,31 +226,29 @@ int encriptar2_filtrado(char caracter, int x[], int senha_len, int index) {
                 printf("\n");
                 count = 0;
             } else if (count % 6 == 0 && count % 48!= 0) {
-                printf("_"); // Imprimir sublinhado após cada bloco de 7 caracteres (exceto quando é uma nova linha)
+                printf("_"); // Imprime um '_' a cada 7 caracteres, a não ser que seja altura de mudar de linha
             }
             break;
         }
     }
-
-    if (j == 67) {
-        
-        index--;
+    //aumenta o índice só se o caracter pertencer à tabela
+    if(j!=67){
+      index++;  
     }
-
-
-    index++;
     return index;
 }
 
 int desencriptar2_filtrado(char caracter, int x[], int senha_len, int index) {
+    //inicialização das variáveis
     static int count = 0;
     int cifrado;
-    int mn = index % senha_len; // Calcula o índice na senha
+    int mn = index % senha_len; // calculo do índice da senha
     int j;
 
-    // Encripta o caractere usando a cifra de Vigenère
+    
     for (j = 0; j < 67; ++j) {
         if (caracter == tabela[j]) {
+            
             cifrado = (j + 67 - x[mn]) % 67;
             printf("%c", tabela[cifrado]); // Imprime o caractere cifrado
             count++;
@@ -250,17 +262,12 @@ int desencriptar2_filtrado(char caracter, int x[], int senha_len, int index) {
             break;
         }
     }
-
-    if (j == 67) {
-        
-        index--;
+    //aumenta o índice só se o caracter pertencer à tabela
+    if(j!=67){
+      index++;  
     }
-
-
-    index++;
     return index;
 }
-
 
 void help(){
     printf("Escolha a opção que pretende utilizar:\n");
@@ -271,36 +278,37 @@ void help(){
     printf("-d nn operação de decifra do método a escolher\n");
 }
 
-
-void encriptacao(int metodo,int f,char *senha){
+void encriptacao(int metodo,int f,char *senha){//função que analisa os argumentos da linha de comando caso seja realizada um operação de encriptação
 
     if (metodo==1 && f==0){
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        //inicialização das variáveis
+        char caracter = '\0'; 
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
-                //printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
+                
                 exit(EXIT_SUCCESS);
             }
-            encriptar1(caracter,senha);
+            encriptar1(caracter,senha);//função de encriptação dos caracteres
 
             
         }   
     }else if (metodo == 1 && f==1){
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        //inicialização das variáveis
+        char caracter = '\0'; 
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
                 exit(EXIT_SUCCESS);
             }
-            encriptar1_filtado(caracter,senha);
+            encriptar1_filtado(caracter,senha);//função de encriptação dos caracteres com filtragem
 
             
         }
@@ -308,73 +316,77 @@ void encriptacao(int metodo,int f,char *senha){
     
     if (metodo==2 && f==0)
     {
+        //inicialização das variáveis
         int aux;  
         int senha_len = strlen(senha);
         int x[senha_len];
-        
-        // Calcula os offsets para cada caractere da senha
+        int index=0;
+        char caracter = '\0'; 
+
+        // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
         for (int i = 0; i < senha_len; i++) {
             for (int j = 0; j < 67; j++) {
                 if (senha[i] == tabela[j]) {
-                    x[i] = j; // Salva o offset para o caractere da senha
-                    //printf("Offset -> %d\n", x[i]); // Printa o offset correspondente ao caractere da senha
+                    x[i] = j; 
+                    
                     break;
                 }
             }
         }
 
         
-        int index=0;
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
-                //printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
+                
                 exit(EXIT_SUCCESS);
             }
             
             
-            aux=encriptar2(caracter,x, senha_len,index);
+            aux=encriptar2(caracter,x, senha_len,index);//função de encriptação dos caracteres
             index = aux;
             
             
         }
     }else if (metodo==2 && f==1)
     {
+        //inicialização das variaveis
         int aux;
-        char *senha = "Programacao2024"; // Sua senha de exemplo
         int senha_len = strlen(senha);
         int x[senha_len];
-        
-        // Calcula os offsets para cada caractere da senha
+        int index=0;
+        char caracter = '\0'; 
+
+        // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
         for (int i = 0; i < senha_len; i++) {
             for (int j = 0; j < 67; j++) {
                 if (senha[i] == tabela[j]) {
-                    x[i] = j; // Salva o offset para o caractere da senha
-                    //printf("Offset -> %d\n", x[i]); // Printa o offset correspondente ao caractere da senha
+                    x[i] = j; 
+                    
                     break;
                 }
             }
         }
 
         
-        int index=0;
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
                 exit(EXIT_SUCCESS);
             }
             
             
-            aux=encriptar2_filtrado(caracter,x, senha_len,index);
+            aux=encriptar2_filtrado(caracter,x, senha_len,index);//função de encriptação dos caracteres com filtragem
+
             index = aux;
             
             
@@ -382,29 +394,28 @@ void encriptacao(int metodo,int f,char *senha){
 
     }
     
-    printf("Operação Errada");
+    printf("Operação Errada\n");
     exit(EXIT_FAILURE);
 
 }
-
-
 
 void decriptacao(int metodo,int f,char *senha){
 
     if (metodo==1 && f==0){
 
+        //inicialização das variáveis
 
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        char caracter = '\0'; 
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
-                //printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
+                
                 exit(EXIT_SUCCESS);
             }
-            desencriptar1(caracter,senha);
+            desencriptar1(caracter,senha);//função de decriptação dos caracteres
     
             
         }
@@ -413,18 +424,18 @@ void decriptacao(int metodo,int f,char *senha){
 
     }else if (metodo == 1 && f==1){
         
-
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        //inicialização das variáveis
+        char caracter = '\0'; 
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
                 exit(EXIT_SUCCESS);
             }
-            desencriptar1_filtrado(caracter,senha);
+            desencriptar1_filtrado(caracter,senha);//função de decriptação dos caracteres com filtragem
     
             
         }
@@ -435,38 +446,37 @@ void decriptacao(int metodo,int f,char *senha){
     
     if (metodo==2 && f==0)
     {
-        
+        //inicialização das variáveis
         int aux;
-        char *senha = "Programacao2024"; // Sua senha de exemplo
         int senha_len = strlen(senha);
         int x[senha_len];
+        int index=0;
+        char caracter = '\0'; 
         
-        // Calcula os offsets para cada caractere da senha
+        // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
         for (int i = 0; i < senha_len; i++) {
             for (int j = 0; j < 67; j++) {
                 if (senha[i] == tabela[j]) {
-                    x[i] = j; // Salva o offset para o caractere da senha
-                    //printf("Offset -> %d\n", x[i]); // Printa o offset correspondente ao caractere da senha
+                    x[i] = j; 
+                    
                     break;
                 }
             }
         }
 
         
-        int index=0;
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
-                //printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
+                
                 exit(EXIT_SUCCESS);
             }
             
             
-            aux=desencriptar2(caracter,x, senha_len,index);
+            aux=desencriptar2(caracter,x, senha_len,index);//função de decriptação dos caracteres
             index = aux;
             
             
@@ -476,40 +486,36 @@ void decriptacao(int metodo,int f,char *senha){
 
     }else if (metodo==2 && f==1)
     {
-        
-
-
+        //inicialização das variáveis
         int aux;
-        char *senha = "Programacao2024"; // Sua senha de exemplo
         int senha_len = strlen(senha);
         int x[senha_len];
-        
-        // Calcula os offsets para cada caractere da senha
+        int index=0;
+        char caracter = '\0'; 
+        // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
         for (int i = 0; i < senha_len; i++) {
             for (int j = 0; j < 67; j++) {
                 if (senha[i] == tabela[j]) {
-                    x[i] = j; // Salva o offset para o caractere da senha
-                    //printf("Offset -> %d\n", x[i]); // Printa o offset correspondente ao caractere da senha
+                    x[i] = j; 
                     break;
                 }
             }
         }
 
         
-        int index=0;
-        char caracter = '\0'; /* inicializar com caractere zero para entrar no ciclo while em baixo */
-        //printf("Insert characters: ");
+        
+        
         while(caracter != EOF)
         {
-            /* lê caractere e guarda na variável c, validando a leitura */
+            //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 printf("\n");
-                //printf("Encriptação realizada com sucesso\n");
+                
                 exit(EXIT_SUCCESS);
             }
             
             
-            aux=desencriptar2_filtrado(caracter,x, senha_len,index);
+            aux=desencriptar2_filtrado(caracter,x, senha_len,index);//função de decriptação dos caracteres com filtragem
             index = aux;
             
             
@@ -518,13 +524,13 @@ void decriptacao(int metodo,int f,char *senha){
 
     }
     
-    printf("Operação Errada");
+    printf("Operação Errada\n");
     exit(EXIT_FAILURE);
 
 }
 
 void isValidCharacter(char *senha) {
-    // Check if the character belongs to the tabela[] array
+    // Verifica se o caracter pertence à tabela
     int j;
     for (int x = 0; x < strlen(senha); x++)
     {
@@ -533,62 +539,74 @@ void isValidCharacter(char *senha) {
     
     for (j = 0; j < 67; ++j) {
             if (senha[x] == tabela[j]) {
-                 // Print the character corresponding to the new index
-                 //printf("%c válido",senha[x]);
                 break;
             }
         }
         if (j == 67) {
-            printf("ERRO\n");
+            printf("ERRO: Password Inválida\n");
             exit(EXIT_FAILURE);
         }
     }
 }
 
-
-
-
-
 int main(int argc, char *argv[])  { 
+    //inicialização das variáveis
     int opt; 
-    int operação=0;
-    int metodo=0;
-    
-    
+    int operação=-1;
+    int metodo=-1;
     int f=0;
     char *senha="Programacao2024";
+
+    if (argc>6)//verifica se não foram usados argumentos em demasia
+    {
+        printf("Demasiados argumentos\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    
+    
     
     
     while ((opt = getopt(argc, argv, "h:s:fc:d:")) != -1) {
         switch (opt) {
             case 'h':
-                help();
+                help();//função de ajuda
                 exit(EXIT_SUCCESS);
                 break;
 
             case 's':
+                //altera a senha original e verifica se é uma senha válida
                 senha = optarg;
                 isValidCharacter(senha);
-                
-                
                 break;
 
             case 'f':
-                //printf("comando -> f\n");
+                //ativa a flag de filtragem
                 f = 1;
                 
                 break;
 
             case 'c':
-                //printf("comando -> c\n");
-                operação=1;
-                metodo=atoi(optarg);
+                
+                if (operação!=-1)//verifica se é a primeira vez q a flag -c ou -d é utilizada
+                {
+                    printf("Demasiados argumentos\n");
+                    exit(EXIT_FAILURE);
+                }
+                
+                operação=1;//ativa a flag de encriptação
+                metodo=atoi(optarg);//guarda qual a cifra a usar
                 
                 break;
 
             case 'd':
-                operação=2;
-                metodo=atoi(optarg);
+                if (operação!=-1)//verifica se é a primeira vez q a flag -c ou -d é utilizada
+                {
+                    printf("Demasiados argumentos\n");
+                    exit(EXIT_FAILURE);
+                }
+                operação=2;//ativa a flag de decriptação
+                metodo=atoi(optarg);//guarda qual a cifra a usar
                
                 break;
 
@@ -599,12 +617,10 @@ int main(int argc, char *argv[])  {
     
     }  
    
-
-    if (operação==1)
-    {
+    //analiza as flags da operação a utilizar
+    if (operação==1){
         encriptacao(metodo,f,senha);
-    }else if (operação==2)
-    {
+    }else if (operação==2){
         decriptacao(metodo,f,senha);
     }else{
         printf("operação inválida\n");
@@ -616,5 +632,5 @@ int main(int argc, char *argv[])  {
 
 
 
-    return 1;
+    return 0;
 }
