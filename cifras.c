@@ -29,6 +29,7 @@ void desencriptar1(char caracter, char *password) {
             int cifrado = (j + 67-y) % 67;
             
             printf("%c", tabela[cifrado]); // imprime o caracter desencriptado
+            break;
         }
     }
     //imprime o caracter não cifrado cajo não pertença à tabela
@@ -102,6 +103,7 @@ void encriptar1(char caracter, char *password) {
         if (caracter == tabela[j]) {
             int cifrado = (j + y) % 67;
             printf("%c", tabela[cifrado]); // imprime o caracter cifrado
+            break;
         }
     }
     //imprime o caracter não cifrado cajo não pertença à tabela
