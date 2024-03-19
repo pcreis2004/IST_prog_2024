@@ -81,7 +81,7 @@ void desencriptar1_filtrado(char caracter, char *password) {
     
 }
 
-void encriptar1(char caracter, char *password) {
+int encriptar1(char caracter, char *password) {
     
     //incialização das variaveis
     int j;
@@ -112,7 +112,7 @@ void encriptar1(char caracter, char *password) {
     }
     
     
-    
+    return caracter;
 }
 
 void encriptar1_filtado(char caracter, char *password) {
@@ -280,24 +280,121 @@ void help(){
     printf("-d nn operação de decifra do método a escolher\n");
 }
 
+
+void estatisticas(){
+    //inicialização das variaveis
+    exit(EXIT_FAILURE);
+    int j=0;
+    int inputSize = 1; // Tamanho inicial de 1 char 
+    char caracter = '\0';
+    char *input = (char *)malloc(inputSize * sizeof(char));//alocação de um vetor de chars com o tamanho de 1 char 
+    if (input == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    while (caracter != EOF) {
+        
+        if (scanf("%c", &caracter) < 1){
+
+               break;
+        }
+        inputSize++;
+        input = (char *)realloc(input, inputSize * sizeof(char));//aumentar o vetor input por um char de cada vez q é lido um caracter
+        input[j] = caracter;
+        j++;
+    }
+    
+    int tabela_count[67] = {0}; // Array para contar a ocorrência de cada caractere da Tabela 1
+    int total_caracteres_tabela = 0; // Contador para o total de caracteres da Tabela 1
+    int total_caracteres_arquivo = strlen(input); // Contador para o total de caracteres no arquivo
+    int total_outros = 0; // Contador para o total de caracteres que não estão na Tabela 1
+
+    // Calcular a ocorrência de cada caractere da Tabela 1
+    for (int i = 0; i < total_caracteres_arquivo; i++) {
+        char caracter = input[i];
+        for (int j = 0; j < strlen(tabela); j++) {
+            if (caracter == tabela[j]) {
+                tabela_count[j]++;
+                total_caracteres_tabela++;
+                break;
+            }
+        }
+    }
+
+    // Imprime a contagem e a frequência de cada caractere da Tabela 1
+    for (int i = 0; i < strlen(tabela); i++) {
+        double frequencia = (double)tabela_count[i] / total_caracteres_tabela * 100;
+        printf("conta('%c')=%d %.6lf%%\n", tabela[i], tabela_count[i], frequencia);
+    }
+
+    // Imprime o total de caracteres da Tabela 1
+    printf("Total: %d caracteres\n", total_caracteres_tabela);
+
+    // Calcular a ocorrência de outros caracteres
+    for (int i = 0; i < total_caracteres_arquivo; i++) {
+        char caracter = input[i];
+        int encontrado = 0;
+        for (int j = 0; j < strlen(tabela); j++) {
+            if (caracter == tabela[j]) {
+                encontrado = 1;
+                break;
+            }
+        }
+        if (!encontrado)
+            total_outros++;
+    }
+
+    // Imprime a contagem e a frequência de outros caracteres
+    double frequencia_outros = (double)total_outros / total_caracteres_arquivo * 100;
+    printf("conta(outros)=%d %.6lf%%\n", total_outros, frequencia_outros);
+
+    // Imprime o total de caracteres no arquivo
+    printf("Total do ficheiro: %d caracteres\n", total_caracteres_arquivo);
+
+
+    free(input);
+
+
+}
+
 void encriptacao(int metodo,int f,char *senha){//função que analisa os argumentos da linha de comando caso seja realizada um operação de encriptação
 
     if (metodo==1 && f==0){
         //inicialização das variáveis
-        char caracter = '\0'; 
         
-        while(caracter != EOF)
-        {
-            //Lê caracter a caracter do stdin até ler um EOF
-            if (scanf("%c", &caracter) < 1){
-                
-                
+        char *senha="Programacao2024";
+        char caracter = '\0';
+        int i = 0;
+        int inputSize = 1; // Initial size of input
+        char *input = (char *)malloc(inputSize * sizeof(char)); // Allocate memory for input
+
+        if (input == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            exit(EXIT_FAILURE);
+        }
+
+        while (caracter != EOF) {
+            // Resize input array
+            if (scanf("%c", &caracter) < 1)
+            {
+                free(input);
                 exit(EXIT_SUCCESS);
             }
-            encriptar1(caracter,senha);//função de encriptação dos caracteres
-
             
-        }   
+            inputSize++;
+            input = (char *)realloc(input, inputSize * sizeof(char));
+            if (input == NULL) {
+                fprintf(stderr, "Memory reallocation failed\n");
+                exit(EXIT_FAILURE);
+            }
+
+            // Encrypt the character
+            input[i] = encriptar1(caracter, senha);
+            i++;
+        }
+
+       
+
     }else if (metodo == 1 && f==1){
         //inicialização das variáveis
         char caracter = '\0'; 
@@ -569,7 +666,7 @@ int main(int argc, char *argv[])  {
     
     
     
-    while ((opt = getopt(argc, argv, "h:s:fc:d:")) != -1) {
+    while ((opt = getopt(argc, argv, "h:s:fc:d:e")) != -1) {
         switch (opt) {
             case 'h':
                 help();//função de ajuda
@@ -611,8 +708,16 @@ int main(int argc, char *argv[])  {
                 metodo=atoi(optarg);//guarda qual a cifra a usar
                
                 break;
-
+            case 'e':
+                if (operação!=-1)//verifica se é a primeira vez q a flag -c ou -d é utilizada
+                {
+                    printf("Demasiados argumentos\n");
+                    exit(EXIT_FAILURE);
+                }
+                operação=3;
+                break;
             default:
+                
                 help();
                 exit(EXIT_FAILURE);
         }
@@ -624,6 +729,8 @@ int main(int argc, char *argv[])  {
         encriptacao(metodo,f,senha);
     }else if (operação==2){
         decriptacao(metodo,f,senha);
+    }else if (operação==3){
+        estatisticas();
     }else{
         printf("operação inválida\n");
         exit(EXIT_FAILURE);
