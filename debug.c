@@ -13,11 +13,11 @@ typedef struct Argumentos {
 } Argumentos;
 
 
-size_t encriptar1_filtrado(char caracter, char *password, char *buffer, size_t *tamanho) {
-    // Incialização das variáveis
+int encriptar1_filtrado(char caracter, char *password, char *buffer, int *tamanho) {
+    //incialização das variaveis
     static int count = 0;
     static int index = 0;
-    // Cálculo do offset do primeiro caracter
+    // calculo do offset do primeiro caracter
     int y = 0;
     for (int lol = 0; lol < 67; ++lol) {
         if (password[0] == tabela[lol]) {
@@ -32,26 +32,26 @@ size_t encriptar1_filtrado(char caracter, char *password, char *buffer, size_t *
             
            
             int cifrado = (j + y) % 67;
-            printf("%c", tabela[cifrado]); // Imprime o caractere cifrado
+            printf("%c", tabela[cifrado]); // imprime o caracter cifrado
             (*tamanho)++;
-            buffer = (char *)realloc(buffer, (*tamanho) * sizeof(char));
-            buffer[index] = tabela[cifrado];
+            buffer=(char *)realloc(buffer, (*tamanho)*sizeof(char));
+            buffer[index]=tabela[cifrado];
             index++;
             count++;
 
-            // Verifica se é preciso mudar de linha
+            // verifica se é preciso mudar de linha
             if (count == 48) {
                 printf("\n");
-                (*tamanho)++;
-                buffer = (char *)realloc(buffer, (*tamanho) * sizeof(char));
-                buffer[index] = '\n';
+                tamanho++;
+                buffer=(char *)realloc(buffer, (*tamanho)*sizeof(char));
+                buffer[index]='\n';
                 count = 0;
                 index++;
-            } else if (count % 6 == 0 && count % 48 != 0) { // Imprime um '_' a cada 7 caracteres, a não ser que seja hora de mudar de linha
+            } else if (count % 6 == 0 && count % 48!= 0) { // Imprime um '_' a cada 7 caracteres, a não ser que seja altura de mudar de linha
                 printf("_"); 
                 (*tamanho)++;
-                buffer = (char *)realloc(buffer, (*tamanho) * sizeof(char));
-                buffer[index] = '_';  
+                buffer=(char *)realloc(buffer, (*tamanho)*sizeof(char));
+                buffer[index]='_';  
                 index++;
             }
 
@@ -102,13 +102,14 @@ void lerficheiro(char *filename, Argumentos *argumentos){
 }
 
 int main() {
-    // Inicialização das variáveis
-    char *senha = "Programacao2024";
-    size_t i = 0;
-    size_t tamanho = 1;
+    //inicialização das variáveis
+    char *senha="Programacao2024";
+    
+    int i = 0;
+    int tamanho = 1;
     Argumentos *argumentos = malloc(sizeof(Argumentos));
-    char filename[] = "1line.txt";
-    lerficheiro(filename, argumentos);
+    char filename[]="input.txt";
+    lerficheiro(filename,argumentos);
     
     char *buffer = (char *)malloc(tamanho * sizeof(char)); 
     if (buffer == NULL) {
@@ -122,14 +123,18 @@ int main() {
         tamanho = encriptar1_filtrado(argumentos->input[i], senha, buffer, &tamanho);
         i++;
     }
-    argumentos->output = buffer;
+    argumentos->output=buffer;
     printf("\nargumentos.input -> [%s]\n", argumentos->input);            
     printf("\nbuffer --> [%s]", buffer);
     printf("\nargumentos.output -> [%s]\n", argumentos->output);
     return 1;
     
+
+
     free(argumentos->input);
     free(argumentos->output);
     free(argumentos);
+       
+
     return 0;
 }

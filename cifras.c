@@ -6,6 +6,13 @@
 
 char tabela[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,;-";
 
+typedef struct Argumentos {
+    char *input;
+    char *output;
+    char *senha;
+    size_t size; // Tamanho do vetor
+} Argumentos;
+
 void desencriptar1(char caracter, char *password) {
     
     //incialização das variaveis
@@ -86,7 +93,7 @@ int encriptar1(char caracter, char *password) {
     //incialização das variaveis
     int j;
     int y = -1; 
-
+    char return_value=caracter;
     // calculo do offset do primeiro caracter
     for (int lol = 0; lol < 67; ++lol) {
         if (password[0] == tabela[lol]) {
@@ -103,6 +110,7 @@ int encriptar1(char caracter, char *password) {
         if (caracter == tabela[j]) {
             int cifrado = (j + y) % 67;
             printf("%c", tabela[cifrado]); // imprime o caracter cifrado
+            return_value=tabela[cifrado];
             break;
         }
     }
@@ -112,14 +120,15 @@ int encriptar1(char caracter, char *password) {
     }
     
     
-    return caracter;
+    
+    return return_value;
 }
 
-void encriptar1_filtado(char caracter, char *password) {
-    
+
+size_t encriptar1_filtrado(char caracter, char *password, char *buffer, size_t *tamanho) {
     //incialização das variaveis
     static int count = 0;
-
+    static int index = 0;
     // calculo do offset do primeiro caracter
     int y = 0;
     for (int lol = 0; lol < 67; ++lol) {
@@ -135,22 +144,37 @@ void encriptar1_filtado(char caracter, char *password) {
             
            
             int cifrado = (j + y) % 67;
-            printf("%c", tabela[cifrado]); // imprime o caracter cifrado
-
+            //printf("%c", tabela[cifrado]); // imprime o caracter cifrado
+            (*tamanho)++;
+            buffer=(char *)realloc(buffer, (*tamanho)*sizeof(char));
+            buffer[index]=tabela[cifrado];
+            index++;
             count++;
 
             // verifica se é preciso mudar de linha
             if (count == 48) {
-                printf("\n");
+                //printf("\n");
+                tamanho++;
+                buffer=(char *)realloc(buffer, (*tamanho)*sizeof(char));
+                buffer[index]='\n';
                 count = 0;
+                index++;
             } else if (count % 6 == 0 && count % 48!= 0) { // Imprime um '_' a cada 7 caracteres, a não ser que seja altura de mudar de linha
-                printf("_"); 
+                //printf("_"); 
+                (*tamanho)++;
+                buffer=(char *)realloc(buffer, (*tamanho)*sizeof(char));
+                buffer[index]='_';  
+                index++;
             }
 
             break;
         }
     }
+    return (*tamanho);
 }
+
+
+
 
 int encriptar2(char caracter, int x[], int senha_len, int index) {
     //inicialização das variáveis
@@ -179,7 +203,6 @@ int encriptar2(char caracter, int x[], int senha_len, int index) {
     
     return index;
 }
-
 
 int desencriptar2(char caracter, int x[], int senha_len, int index) {
     //inicialização das variáveis
@@ -280,10 +303,9 @@ void help(){
     printf("-d nn operação de decifra do método a escolher\n");
 }
 
-
 void estatisticas(){
     //inicialização das variaveis
-    exit(EXIT_FAILURE);
+    
     int j=0;
     int inputSize = 1; // Tamanho inicial de 1 char 
     char caracter = '\0';
@@ -357,60 +379,97 @@ void estatisticas(){
 
 }
 
-void encriptacao(int metodo,int f,char *senha){//função que analisa os argumentos da linha de comando caso seja realizada um operação de encriptação
+int encriptacao(int metodo,int f,char *senha,Argumentos* argumentos){//função que analisa os argumentos da linha de comando caso seja realizada um operação de encriptação
 
     if (metodo==1 && f==0){
         //inicialização das variáveis
         
-        char *senha="Programacao2024";
-        char caracter = '\0';
+        char caracter = 'l';
         int i = 0;
-        int inputSize = 1; // Initial size of input
-        char *input = (char *)malloc(inputSize * sizeof(char)); // Allocate memory for input
+        int tamanho=1;
+        if (argumentos->input==NULL){
 
-        if (input == NULL) {
-            fprintf(stderr, "Memory allocation failed\n");
-            exit(EXIT_FAILURE);
-        }
-
-        while (caracter != EOF) {
-            // Resize input array
-            if (scanf("%c", &caracter) < 1)
-            {
-                free(input);
-                exit(EXIT_SUCCESS);
-            }
-            
-            inputSize++;
-            input = (char *)realloc(input, inputSize * sizeof(char));
-            if (input == NULL) {
-                fprintf(stderr, "Memory reallocation failed\n");
-                exit(EXIT_FAILURE);
+            char *buffer = (char *)malloc(tamanho*sizeof(char));
+                while(caracter != EOF){//Lê caracter a caracter do stdin até ler um EOF
+                
+                buffer = (char *)realloc(buffer, tamanho * sizeof(char));
+                if (scanf("%c", &caracter) < 1){
+                    
+                    argumentos->output=buffer;
+                    return 1;
+                }
+                buffer[i]=encriptar1(caracter,senha);//função de encriptação dos caracteres
+                i++;
+                tamanho++;
             }
 
-            // Encrypt the character
-            input[i] = encriptar1(caracter, senha);
-            i++;
+        }else{
+
+        
+        char *buffer = (char *)malloc(tamanho * sizeof(char)); 
+        if (buffer == NULL) {
+        fprintf(stderr, "Erro de alocação de memória\n");
+        exit(EXIT_FAILURE);
+        }
+        while (argumentos->input[i] != '\0') {
+                buffer = (char *)realloc(buffer,tamanho*sizeof(char));
+                buffer[i] = encriptar1(argumentos->input[i], senha);
+                i++;
+                tamanho++;
         }
 
-       
+
+        
+        argumentos->output = buffer;
+
+
+
+        return 1;
+        }
 
     }else if (metodo == 1 && f==1){
         //inicialização das variáveis
-        char caracter = '\0'; 
-        
+        char caracter = '\0';
+        int i = 0;
+        size_t tamanho=1; 
+        if (argumentos->input==NULL){
         while(caracter != EOF)
         {
             //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 printf("\n");
-                
+                return 1;
                 exit(EXIT_SUCCESS);
             }
-            encriptar1_filtado(caracter,senha);//função de encriptação dos caracteres com filtragem
+            //encriptar1_filtrado(caracter,senha);//função de encriptação dos caracteres com filtragem
 
             
         }
+
+        }else{
+           
+            char *buffer = (char *)malloc(tamanho * sizeof(char)); 
+            if (buffer == NULL) {
+                fprintf(stderr, "Erro de alocação de memória\n");
+                free(argumentos);
+                return EXIT_FAILURE;
+            }
+
+            tamanho = 1;
+            while (argumentos->input[i] != '\0') {
+                tamanho = encriptar1_filtrado(argumentos->input[i], senha, buffer, &tamanho);
+                i++;
+                //printf("O buffer %d é -----> [%s]   buffer[%d]=[%c]\n",i,buffer,i,buffer[i]);
+                printf("O buffer %d é -----> [%s]\n",i,buffer);
+            }
+            
+            argumentos->output=buffer;
+            printf("\nargumentos.input -> [%s]\n", argumentos->input);            
+            printf("\nbuffer --> [%s]", buffer);
+            printf("\nargumentos.output -> [%s]\n", argumentos->output);
+            return 1;
+        }
+
     }
     
     if (metodo==2 && f==0)
@@ -441,7 +500,7 @@ void encriptacao(int metodo,int f,char *senha){//função que analisa os argumen
             //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 
-                
+                return 1;
                 exit(EXIT_SUCCESS);
             }
             
@@ -479,7 +538,7 @@ void encriptacao(int metodo,int f,char *senha){//função que analisa os argumen
             //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 printf("\n");
-                
+                return 1;
                 exit(EXIT_SUCCESS);
             }
             
@@ -493,9 +552,9 @@ void encriptacao(int metodo,int f,char *senha){//função que analisa os argumen
 
     }
     
-    printf("Operação Errada\n");
+    printf("Operação Errada linha 552\n");
     exit(EXIT_FAILURE);
-
+    return 0;
 }
 
 void decriptacao(int metodo,int f,char *senha){
@@ -648,25 +707,80 @@ void isValidCharacter(char *senha) {
     }
 }
 
+void imprimir(char *filename,Argumentos *argumentos){
+    // Abre o arquivo para escrita
+    FILE *arquivo = fopen(filename, "w");
+
+    // Verifica se houve erro na abertura do arquivo
+    if (arquivo == NULL) {
+        fprintf(stderr, "Erro ao abrir o arquivo %s\n", filename);
+        return;
+    }
+
+    // Escreve a string no arquivo
+    fprintf(arquivo, "%s", argumentos->output);
+
+    // Fecha o arquivo
+    fclose(arquivo);
+
+}
+
+void lerficheiro(char *filename, Argumentos *argumentos){
+   
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Erro ao abrir o arquivo %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
+    printf("Ficheiro aberto com sucesso\n");
+    // Calculando o tamanho do arquivo
+    fseek(file, 0, SEEK_END); // Indo para o final do arquivo
+    size_t file_size = ftell(file); // Obtendo o tamanho do arquivo
+    rewind(file); // Voltando para o início do arquivo
+
+    // Alocando memória para o vetor de caracteres
+    char *buffer = (char *)malloc(file_size + 1); // +1 para o caractere nulo
+    if (buffer == NULL) {
+        fprintf(stderr, "Erro de alocação de memória\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Lendo o conteúdo do arquivo para o buffer
+    size_t bytes_read = fread(buffer, 1, file_size, file);
+    if (bytes_read != file_size) {
+        fprintf(stderr, "Erro ao ler o arquivo %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
+    buffer[bytes_read] = '\0'; // Adicionando o caractere nulo ao final
+
+    // Fechando o arquivo
+    fclose(file);
+
+    // Criando a estrutura FileContent e preenchendo-a
+    
+    argumentos->input = buffer;
+    argumentos->size = bytes_read;
+    
+
+}
+
 int main(int argc, char *argv[])  { 
+
     //inicialização das variáveis
     int opt; 
     int operação=-1;
     int metodo=-1;
     int f=0;
     char *senha="Programacao2024";
+    char filename[100];
+    int teste =0;
+    int o=0;
+    char filename_out[100];
 
-    if (argc>6)//verifica se não foram usados argumentos em demasia
-    {
-        printf("Demasiados argumentos\n");
-        exit(EXIT_FAILURE);
-    }
+    Argumentos *argumentos = malloc(sizeof(Argumentos));
     
     
-    
-    
-    
-    while ((opt = getopt(argc, argv, "h:s:fc:d:e")) != -1) {
+    while ((opt = getopt(argc, argv, "h:s:fc:d:i:o:e")) != -1) {
         switch (opt) {
             case 'h':
                 help();//função de ajuda
@@ -689,7 +803,7 @@ int main(int argc, char *argv[])  {
                 
                 if (operação!=-1)//verifica se é a primeira vez q a flag -c ou -d é utilizada
                 {
-                    printf("Demasiados argumentos\n");
+                    printf("Demasiados argumentos linha 750, operação ->%d\n",operação);
                     exit(EXIT_FAILURE);
                 }
                 
@@ -701,17 +815,26 @@ int main(int argc, char *argv[])  {
             case 'd':
                 if (operação!=-1)//verifica se é a primeira vez q a flag -c ou -d é utilizada
                 {
-                    printf("Demasiados argumentos\n");
+                    printf("Demasiados argumentos linha 762, operação ->%d\n",operação);
                     exit(EXIT_FAILURE);
                 }
                 operação=2;//ativa a flag de decriptação
                 metodo=atoi(optarg);//guarda qual a cifra a usar
                
                 break;
+            case 'i':
+                strcpy(filename,optarg);
+                printf("[%s]\n",filename);
+                lerficheiro(filename,argumentos);
+                break;
+            case 'o':
+                o=1;//flag para criar ficheiro de output
+                strcpy(filename_out,optarg);
+                break;
             case 'e':
                 if (operação!=-1)//verifica se é a primeira vez q a flag -c ou -d é utilizada
                 {
-                    printf("Demasiados argumentos\n");
+                    printf("Demasiados argumentos aqui\n");
                     exit(EXIT_FAILURE);
                 }
                 operação=3;
@@ -726,7 +849,9 @@ int main(int argc, char *argv[])  {
    
     //analiza as flags da operação a utilizar
     if (operação==1){
-        encriptacao(metodo,f,senha);
+        
+        teste = encriptacao(metodo,f,senha,argumentos);
+        
     }else if (operação==2){
         decriptacao(metodo,f,senha);
     }else if (operação==3){
@@ -736,10 +861,19 @@ int main(int argc, char *argv[])  {
         exit(EXIT_FAILURE);
     }
     
+    if (o==1)
+    {
+       
+        imprimir(filename_out,argumentos);
+    }
     
-
-
-
+    
+    if (teste==1){
+    free(argumentos->input);
+    free(argumentos->output);
+    free(argumentos);
+    exit(EXIT_SUCCESS);
+    }
 
     return 0;
 }
