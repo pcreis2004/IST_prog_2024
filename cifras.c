@@ -124,7 +124,7 @@ int encriptar1(char caracter, char *password) {
     return return_value;
 }
 
-
+/*
 size_t encriptar1_filtrado(char caracter, char *password, char *buffer, size_t *tamanho) {
     //incialização das variaveis
     static int count = 0;
@@ -172,14 +172,60 @@ size_t encriptar1_filtrado(char caracter, char *password, char *buffer, size_t *
     }
     return (*tamanho);
 }
+*/
 
+size_t encriptar1_filtrado(char caracter, char *password, char **buffer, size_t *tamanho) {
+    // Incialização das variáveis
+    static int count = 0;
+    static int index = 0;
+    // Calculo do offset do primeiro caracter
+    int y = 0;
+    for (int lol = 0; lol < 67; ++lol) {
+        if (password[0] == tabela[lol]) {
+            y = lol;
+            break;
+        }
+    }
 
+    for (int j = 0; j < 67; ++j) {
+        if (caracter == tabela[j]) {
+            int cifrado = (j + y) % 67;
+            (*tamanho)++;
+*buffer = (char *)realloc(*buffer, ((*tamanho)+1) * sizeof(char));
 
+            //printf("tamanho = %ld\n",*tamanho);
+            printf("%c",tabela[cifrado]);
+            (*buffer)[index] = tabela[cifrado];
+            index++;
+            count++;
 
-int encriptar2(char caracter, int x[], int senha_len, int index) {
+            // Verifica se é preciso mudar de linha
+            if (count == 48) {
+                printf("\n");
+                (*tamanho)++;
+*buffer = (char *)realloc(*buffer, ((*tamanho)+1) * sizeof(char));                //printf("tamanho = %ld\n",*tamanho);
+                (*buffer)[index] = '\n';
+                count = 0;
+                index++;
+            } else if (count % 6 == 0 && count % 48 != 0) {
+                printf("_");
+                (*tamanho)++;
+*buffer = (char *)realloc(*buffer, ((*tamanho)+1) * sizeof(char));                //printf("tamanho = %ld\n",*tamanho);
+                (*buffer)[index] = '_';  
+                index++;
+            }
+
+            break;
+        }
+    }
+    return *tamanho;
+}
+
+char encriptar2(char caracter, int x[], int senha_len, int *index) {
     //inicialização das variáveis
+    char return_value=caracter;
     int cifrado;
-    int mn = index % senha_len; // calculo do índice da senha
+    int mn = (*index) % senha_len; // calculo do índice da senha
     int j;
     
 
@@ -187,6 +233,7 @@ int encriptar2(char caracter, int x[], int senha_len, int index) {
         if (caracter == tabela[j]) {
             cifrado = (j + x[mn]) % 67;
             printf("%c", tabela[cifrado]); // Imprime o caractere cifrado
+            return_value=tabela[cifrado];
             break;
         }
     }
@@ -198,10 +245,10 @@ int encriptar2(char caracter, int x[], int senha_len, int index) {
     }
     //aumenta o índice só se o caracter pertencer à tabela
     if(j!=67){
-      index++;  
+      (*index)++;  
     }
     
-    return index;
+    return return_value; 
 }
 
 int desencriptar2(char caracter, int x[], int senha_len, int index) {
@@ -232,11 +279,12 @@ int desencriptar2(char caracter, int x[], int senha_len, int index) {
     return index;
 }
 
-int encriptar2_filtrado(char caracter, int x[], int senha_len, int index) {
-    //inicialização das variáveis
+size_t encriptar2_filtrado(char caracter, int x[], char **buffer,int senha_len, int *index, size_t *tamanho) {
+    //inicialização das variáveis1
     static int count = 0;
+    static int i = 0;
     int cifrado;
-    int mn = index % senha_len; // calculo do índice da senha
+    int mn = (*index) % senha_len; // calculo do índice da senha
     int j;
 
    
@@ -246,21 +294,34 @@ int encriptar2_filtrado(char caracter, int x[], int senha_len, int index) {
             cifrado = (j + x[mn]) % 67;
             printf("%c", tabela[cifrado]); // Imprime o caractere cifrado
             count++;
-            
+            (*tamanho)++;
+            *buffer = (char *)realloc(*buffer, ((*tamanho)+1) * sizeof(char));
+            (*buffer)[i] = tabela[cifrado];
+            i++;
             if (count == 48) {
                 printf("\n");
+                
+                i++;
+                (*tamanho)++;
+                *buffer = (char *)realloc(*buffer, ((*tamanho)+1) * sizeof(char));
+                (*buffer)[i] = '\n';
                 count = 0;
             } else if (count % 6 == 0 && count % 48!= 0) {
                 printf("_"); // Imprime um '_' a cada 7 caracteres, a não ser que seja altura de mudar de linha
+                (*tamanho)++;
+                *buffer = (char *)realloc(*buffer, ((*tamanho)+1) * sizeof(char));
+                (*buffer)[i] = '_';
+                i++;  
+                
             }
             break;
         }
     }
     //aumenta o índice só se o caracter pertencer à tabela
     if(j!=67){
-      index++;  
+      (*index)++;  
     }
-    return index;
+    return *tamanho;
 }
 
 int desencriptar2_filtrado(char caracter, int x[], int senha_len, int index) {
@@ -431,42 +492,47 @@ int encriptacao(int metodo,int f,char *senha,Argumentos* argumentos){//função 
         //inicialização das variáveis
         char caracter = '\0';
         int i = 0;
-        size_t tamanho=1; 
+        size_t tamanho=0; 
         if (argumentos->input==NULL){
+        char *buffer = NULL;
         while(caracter != EOF)
         {
             //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
                 printf("\n");
+                tamanho++;
+                buffer = (char *)realloc(buffer, ((tamanho) * sizeof(char))); 
+                argumentos->output=buffer;
                 return 1;
-                exit(EXIT_SUCCESS);
-            }
-            //encriptar1_filtrado(caracter,senha);//função de encriptação dos caracteres com filtragem
+                
+                }
+            tamanho=encriptar1_filtrado(caracter, senha, &buffer, &tamanho);//função de encriptação dos caracteres com filtragem
 
             
         }
 
         }else{
-           
-            char *buffer = (char *)malloc(tamanho * sizeof(char)); 
-            if (buffer == NULL) {
-                fprintf(stderr, "Erro de alocação de memória\n");
-                free(argumentos);
-                return EXIT_FAILURE;
-            }
-
-            tamanho = 1;
-            while (argumentos->input[i] != '\0') {
-                tamanho = encriptar1_filtrado(argumentos->input[i], senha, buffer, &tamanho);
-                i++;
-                //printf("O buffer %d é -----> [%s]   buffer[%d]=[%c]\n",i,buffer,i,buffer[i]);
-                printf("O buffer %d é -----> [%s]\n",i,buffer);
-            }
             
+            char *buffer = NULL;
+            size_t j=0;
+            while (argumentos->input[j] != '\0') {
+                tamanho = encriptar1_filtrado(argumentos->input[j], senha, &buffer, &tamanho);
+                i++;
+                j++;
+                //printf("O buffer %d é -----> [%s]   buffer[%d]=[%c]\n",i,buffer,i,buffer[i]);
+                //printf("O buffer %ld é -----> [%s], com um tamanho de %ld\n",j,buffer,tamanho);
+                
+            }
+            buffer[tamanho+1] = '\0';
+            tamanho++;
+            buffer = (char *)realloc(buffer, tamanho * sizeof(char));
+            buffer[tamanho-1]='\n';
+            printf("\n");
             argumentos->output=buffer;
+            /*printf("Tamanho --> %ld\n",tamanho);
             printf("\nargumentos.input -> [%s]\n", argumentos->input);            
             printf("\nbuffer --> [%s]", buffer);
-            printf("\nargumentos.output -> [%s]\n", argumentos->output);
+            printf("\nargumentos.output -> [%s]\n", argumentos->output);*/
             return 1;
         }
 
@@ -475,50 +541,95 @@ int encriptacao(int metodo,int f,char *senha,Argumentos* argumentos){//função 
     if (metodo==2 && f==0)
     {
         //inicialização das variáveis
-        int aux;  
         int senha_len = strlen(senha);
         int x[senha_len];
         int index=0;
         char caracter = '\0'; 
+        char *buffer = NULL; 
+        size_t tamanho=0;
+        int i=0;
 
-        // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
-        for (int i = 0; i < senha_len; i++) {
-            for (int j = 0; j < 67; j++) {
-                if (senha[i] == tabela[j]) {
-                    x[i] = j; 
-                    
-                    break;
+
+        if (argumentos->input==NULL){
+            
+            // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
+            for (int i = 0; i < senha_len; i++) {
+                for (int j = 0; j < 67; j++) {
+                    if (senha[i] == tabela[j]) {
+                        x[i] = j; 
+                        
+                        break;
+                    }
                 }
             }
+
+            
+            
+            
+            while(caracter != EOF)
+            {
+                //Lê caracter a caracter do stdin até ler um EOF
+                if (scanf("%c", &caracter) < 1){
+                    buffer[tamanho+1] = '\0';
+                    argumentos->output=buffer;
+                    return 1;
+                    //exit(EXIT_SUCCESS);
+                }
+                tamanho++;
+                buffer = (char *)realloc(buffer, tamanho * sizeof(char));
+                buffer[i]=encriptar2(caracter,x, senha_len,&index);//função de encriptação dos caracteres
+                //3printf("\n\n[%d]\n\n",index);
+                i++;
+            }    
+                
+
+
+
+
+
+        }else{
+
+               // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
+                for (int i = 0; i < senha_len; i++) {
+                    for (int j = 0; j < 67; j++) {
+                        if (senha[i] == tabela[j]) {
+                            x[i] = j; 
+                            
+                            break;
+                        }
+                    }
+                }
+
+                
+                
+                int j=0;
+                while(argumentos->input[j] != '\0')
+                {
+                    tamanho++;
+                    buffer = (char *)realloc(buffer, tamanho * sizeof(char));
+                    buffer[i]=encriptar2(argumentos->input[j],x, senha_len,&index);//função de encriptação dos caracteres
+                    j++;
+                    //3printf("\n\n[%d]\n\n",index);
+                    i++;
+                }
+                buffer[tamanho+1] = '\0';
+                argumentos->output=buffer;
+                return 1;    
+
         }
 
+
+
         
-        
-        
-        while(caracter != EOF)
-        {
-            //Lê caracter a caracter do stdin até ler um EOF
-            if (scanf("%c", &caracter) < 1){
-                
-                return 1;
-                exit(EXIT_SUCCESS);
-            }
-            
-            
-            aux=encriptar2(caracter,x, senha_len,index);//função de encriptação dos caracteres
-            index = aux;
-            
-            
-        }
     }else if (metodo==2 && f==1)
     {
         //inicialização das variaveis
-        int aux;
         int senha_len = strlen(senha);
         int x[senha_len];
         int index=0;
         char caracter = '\0'; 
-
+        size_t tamanho=0;
+        if(argumentos->input==NULL){
         // Calcula os offsets de todos os caracteres e guarda tudo num vetor de inteiros
         for (int i = 0; i < senha_len; i++) {
             for (int j = 0; j < 67; j++) {
@@ -530,24 +641,58 @@ int encriptacao(int metodo,int f,char *senha,Argumentos* argumentos){//função 
             }
         }
 
-        
+        char *buffer=NULL;
         
         
         while(caracter != EOF)
         {
             //Lê caracter a caracter do stdin até ler um EOF
             if (scanf("%c", &caracter) < 1){
+                 buffer[tamanho+1] = '\0';
+                tamanho++;
+                buffer = (char *)realloc(buffer, tamanho * sizeof(char));
+                buffer[tamanho-1]='\n';
                 printf("\n");
+                argumentos->output=buffer;
+
                 return 1;
-                exit(EXIT_SUCCESS);
+                
             }
             
             
-            aux=encriptar2_filtrado(caracter,x, senha_len,index);//função de encriptação dos caracteres com filtragem
+            tamanho=encriptar2_filtrado(caracter,x, &buffer,senha_len,&index,&tamanho);//função de encriptação dos caracteres com filtragem
 
-            index = aux;
             
             
+            
+        }
+        }else{
+
+            for (int i = 0; i < senha_len; i++) {
+            for (int j = 0; j < 67; j++) {
+                if (senha[i] == tabela[j]) {
+                    x[i] = j; 
+                    
+                    break;
+                }
+            }
+        }
+
+        char *buffer=NULL;
+        int i = 0;
+
+        while(argumentos->input[i] != '\0')
+        {
+            tamanho=encriptar2_filtrado(argumentos->input[i],x, &buffer,senha_len,&index,&tamanho);//função de encriptação dos caracteres com filtragem
+            i++;    
+        }
+        buffer[tamanho+1] = '\0';
+        tamanho++;
+        buffer = (char *)realloc(buffer, tamanho * sizeof(char));
+        buffer[tamanho-1]='\n';
+        printf("\n");
+        argumentos->output=buffer;
+        return 1;
         }
 
     }
@@ -732,7 +877,7 @@ void lerficheiro(char *filename, Argumentos *argumentos){
         fprintf(stderr, "Erro ao abrir o arquivo %s\n", filename);
         exit(EXIT_FAILURE);
     }
-    printf("Ficheiro aberto com sucesso\n");
+    //printf("Ficheiro aberto com sucesso\n");
     // Calculando o tamanho do arquivo
     fseek(file, 0, SEEK_END); // Indo para o final do arquivo
     size_t file_size = ftell(file); // Obtendo o tamanho do arquivo
@@ -824,7 +969,7 @@ int main(int argc, char *argv[])  {
                 break;
             case 'i':
                 strcpy(filename,optarg);
-                printf("[%s]\n",filename);
+                
                 lerficheiro(filename,argumentos);
                 break;
             case 'o':
